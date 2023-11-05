@@ -67,7 +67,7 @@ client.on(Events.MessageCreate, async (message) => {
                 console.log(channel);
 
                 if (!channel) {
-                    Frequencies.deleteOne( { channelID: channel.id })
+                    Frequencies.deleteOne( { channelID: document.channelID })
                     return console.log ('One Channel Deleted');
                 }
 
