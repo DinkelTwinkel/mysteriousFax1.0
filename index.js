@@ -66,6 +66,11 @@ client.on(Events.MessageCreate, async (message) => {
                 const channel = guild.channels.cache.get(document.channelID);
                 console.log(channel);
 
+                if (!channel) {
+                    Frequencies.deleteOne( { channelID: channel.id })
+                    return console.log ('One Channel Deleted');
+                }
+
                 const currentNow = new Date().toUTCString();
 
                 channel.send('[' + result.name + ']⠄⠄⠄⠄⠄\n' + message.content + '\n⠄⠄⠄⠄⠄`' + currentNow + '`');
