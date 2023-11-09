@@ -72,8 +72,7 @@ client.on(Events.MessageCreate, async (message) => {
                 }
 
                 const currentNow = new Date().toUTCString();
-
-                channel.send('[' + result.name + ']⠄⠄⠄⠄⠄\n' + message.content + '\n⠄⠄⠄⠄⠄`' + currentNow + '`');
+                channel.send('[' + obfuscateString(message.guild.name) + ']⠄⠄⠄⠄⠄\n' + message.content + '\n⠄⠄⠄⠄⠄`' + currentNow + '`');
 
             })
 
@@ -107,6 +106,30 @@ client.on(Events.MessageCreate, async (message) => {
         // Add more commands here as needed
       }
 })
+
+function obfuscateString(input, chance = 0.5) {
+    const obfuscated = input.split('').map((char) => {
+      // Determine whether to obfuscate the character
+      if (/[a-zA-Z]/.test(char) && Math.random() < chance) {
+        const random = Math.random();
+        if (random < 0.33) {
+          // Replace with a similar-looking number (e.g., 'o' -> '0')
+          return char.replace(/[oO]/, '0').replace(/[lL]/, '1').replace(/[eE]/, '3');
+        } else if (random < 0.66) {
+          // Capitalize the letter
+          return char.toUpperCase();
+        } else if (random < 0.7) {
+          // Repeat the letter
+          return char + char;
+        } else {
+            return char;
+        }
+      }
+      return char;
+    });
+  
+    return obfuscated.join('');
+  }
 
 // Log in to Discord with your client's token
 client.login(token);
