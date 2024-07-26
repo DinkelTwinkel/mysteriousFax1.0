@@ -128,7 +128,7 @@ client.on(Events.MessageCreate, async (message) => {
           message.channel.send('pong');
         } else if (command === 'connect') {
             const establishConnection = require('./PATTERNS/establishConnection');
-            establishConnection(message.guild, message.channel);
+            establishConnection(message.guild, message.channel, client);
         } else if (command === 'seed') {
           message.reply ('https://discord.com/oauth2/authorize?client_id=1166155625290534992&permissions=309237647360&integration_type=0&scope=bot');
         }

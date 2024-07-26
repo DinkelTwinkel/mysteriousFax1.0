@@ -2,7 +2,7 @@
 const Frequencies = require ('../models/frequencies')
 const {ChannelType} = require('discord.js');
 
-module.exports = async (guild, channel) => {
+module.exports = async (guild, channel, client) => {
 
     console.log('Performing conflict check, please hold.');
 
