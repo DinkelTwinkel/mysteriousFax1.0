@@ -43,11 +43,11 @@ module.exports = async (guild, channel, client) => {
 
     const results = await Frequencies.find();
     results.forEach((result) => {
-        const guild = client.guilds.cache.get(result.serverID);
-        const channel = guild.channels.cache.get(result.channelID);
+        const guildReceiver = client.guilds.cache.get(result.serverID);
+        const channel = guildReceiver.channels.cache.get(result.channelID);
         const threadChannel = channel.threads.cache.find(x => x.id === result.threadMessageID);
         if (threadChannel) {
-          threadChannel.send('*New Connection Established-* \n# ' + guild.name);
+          threadChannel.send('*New Connection Established-* \n# ' + obfuscateString(guild.name));
         }
     })
 
