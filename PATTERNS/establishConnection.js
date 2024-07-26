@@ -6,17 +6,17 @@ module.exports = async (guild, channel) => {
 
     console.log('Performing conflict check, please hold.');
 
-    // const query = { channelID: channel.id };
-    // result = await Frequencies.findOne(query);
+    const query = { channelID: channel.id };
+    result = await Frequencies.findOne(query);
 
-    // if (result) {
-    //     console.log('Document already exists: UserID:', result.serverID);
-    //     console.log('Cancelling document creation.');
-    //     channel.send ("[Connection Already Established]");
-    //     return result.save();
-    // } else {
-    //     console.log('Document does not exist, proceeding with connection establishment...');
-    // }
+    if (result) {
+        console.log('Document already exists: UserID:', result.serverID);
+        console.log('Cancelling document creation.');
+        channel.send ("[Connection Already Established]");
+        return result.save();
+    } else {
+        console.log('Document does not exist, proceeding with connection establishment...');
+    }
 
     console.log('Adding Database Entry...');
 
