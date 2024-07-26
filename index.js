@@ -19,18 +19,31 @@ const mongoose = require('mongoose');
 client.once(Events.ClientReady, async c => {
 
     const results = await Frequencies.find();
-    results.forEach((result) => {
+    results.forEach(async (result) => {
         const guild = client.guilds.cache.get(result.serverID);
         const channel = guild.channels.cache.get(result.channelID);
-        // channel.send('Fax Machine has awaken 👁');
+        if (!channel) {
+          Frequencies.deleteOne({serverID: result.serverID});
+          return 
+        }
+        else {
+          //console.log (guild);
+          //const startFax = guild.systemChannel.send('Fax Machine is trying to wake up 👁');
+        }
     })
 
 	console.log(`Ready! Logged in as ${c.user.tag}`);
     client.user.setPresence( { status: "away" });
-    client.user.setActivity('strange frequencies', { type: ActivityType.Listening });
+    client.user.setActivity('!connect to connect', { type: ActivityType.Listening });
+
+    // const guild = await client.guilds.fetch('1171795345223716964');
+    // console.log(guild);
+    // const channel = guild.channels.cache.get('1171795345697669142');
+    // console.log(channel.threads);
+
+    //const threadChannel = channel.threads.cache.find(x => x.id === document.threadMessageID);
 
 });
-
 
 client.on(Events.GuildDelete, async (guild) => {
     console.log('Bot ejection Detected, cleaning up-');
@@ -51,28 +64,39 @@ client.on(Events.GuildDelete, async (guild) => {
 client.on(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
     if (!message.content.startsWith('!')) {
-        result = await Frequencies.findOne({ channelID: message.channel.id });
+
+      // const systemChannel = message.guild.channels.cache.get(bet.channelID);
+
+      //console.log (message.channel.id);
+      // const thread = vegas.threads.cache.find(x => x.id === bet.postID);
+
+        result = await Frequencies.findOne({ threadMessageID: message.channel.id });
         if (result) {
             // repeat message to all places except self. 
 
-            const documents = await Frequencies.find({ serverID: { $ne: result.serverID } });
+            const documents = await Frequencies.find({ threadMessageID: { $ne: message.channel.id} });
             console.log ( documents );
 
-            documents.forEach((document) => {
+            documents.forEach(async (document) => {
 
                 console.log('attempting to echo message');
-                const guild = client.guilds.cache.get(document.serverID);
+                const guild = await client.guilds.fetch(document.serverID);
                 console.log(guild);
                 const channel = guild.channels.cache.get(document.channelID);
                 console.log(channel);
 
-                if (!channel) {
+                const threadChannel = channel.threads.cache.find(x => x.id === document.threadMessageID);
+
+                console.log(threadChannel);
+
+                if (!threadChannel) {
                     Frequencies.deleteOne( { channelID: document.channelID })
                     return console.log ('One Channel Deleted');
                 }
 
                 const currentNow = new Date().toUTCString();
-                channel.send('[' + obfuscateString(message.guild.name) + ']⠄⠄⠄⠄⠄\n' + message.content + '\n⠄⠄⠄⠄⠄`' + currentNow + '`');
+                // channel.send('[' + obfuscateString(message.guild.name) + ']⠄⠄⠄⠄⠄\n' + message.content + '\n⠄⠄⠄⠄⠄`' + currentNow + '`');
+                threadChannel.send('```' + '[' + obfuscateString(message.member.displayName) + '] "' + message.content + '"```' );
 
             })
 
@@ -92,14 +116,14 @@ client.on(Events.MessageCreate, async (message) => {
     
         // Check the command and respond
         if (command === 'ping') {
-          // message.channel.send('pong');
+          message.channel.send('pong');
         } else if (command === 'connect') {
             const establishConnection = require('./PATTERNS/establishConnection');
             const results = await Frequencies.find();
             results.forEach((result) => {
-                const guild = client.guilds.cache.get(result.serverID);
-                const channel = guild.channels.cache.get(result.channelID);
-                channel.send('New Connection Established???');
+                // const guild = client.guilds.cache.get(result.serverID);
+                // const channel = guild.channels.cache.get(result.channelID);
+                // channel.send('New Connection Established???');
             })
             establishConnection(message.guild, message.channel);
         }

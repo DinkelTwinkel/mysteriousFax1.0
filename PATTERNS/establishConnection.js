@@ -1,29 +1,39 @@
 
 const Frequencies = require ('../models/frequencies')
+const {ChannelType} = require('discord.js');
 
 module.exports = async (guild, channel) => {
 
     console.log('Performing conflict check, please hold.');
 
-    const query = { serverID: guild.id };
-    result = await Frequencies.findOne(query);
+    // const query = { channelID: channel.id };
+    // result = await Frequencies.findOne(query);
 
-    if (result) {
-        console.log('Document already exists: UserID:', result.serverID);
-        console.log('Cancelling document creation.');
-        channel.send ("[Connection Already Established]");
-        return result.save();
-    } else {
-        console.log('Document does not exist, proceeding with connection establishment...');
-    }
+    // if (result) {
+    //     console.log('Document already exists: UserID:', result.serverID);
+    //     console.log('Cancelling document creation.');
+    //     channel.send ("[Connection Already Established]");
+    //     return result.save();
+    // } else {
+    //     console.log('Document does not exist, proceeding with connection establishment...');
+    // }
 
     console.log('Adding Database Entry...');
+
+    const faxThreadMessage = await channel.send ("# MYSTERIOUS FAX MACHINE");
+
+    const thread = await faxThreadMessage.startThread({
+      name: '??Mysterious Fax??',
+      autoArchiveDuration: 1440,
+      type:  ChannelType.PublicThread,
+    });
 
     // Create Database Record.
     const connectionPoint = new Frequencies({
 
         serverID: guild.id,
         channelID: channel.id,
+        threadMessageID: faxThreadMessage.id,
         name: obfuscateString(guild.name),
         level: 0,
 
@@ -31,7 +41,7 @@ module.exports = async (guild, channel) => {
 
     console.log('Entry added successfully.');
 
-    channel.send ("[Connection Established]");
+    thread.send ("[Connection Established]");
 
     // add roles + set name
 
