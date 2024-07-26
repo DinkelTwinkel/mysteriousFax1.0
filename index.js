@@ -128,15 +128,6 @@ client.on(Events.MessageCreate, async (message) => {
           message.channel.send('pong');
         } else if (command === 'connect') {
             const establishConnection = require('./PATTERNS/establishConnection');
-            const results = await Frequencies.find();
-            results.forEach((result) => {
-                const guild = client.guilds.cache.get(result.serverID);
-                const channel = guild.channels.cache.get(result.channelID);
-                const threadChannel = channel.threads.cache.find(x => x.id === result.threadMessageID);
-                if (threadChannel) {
-                  threadChannel.send('*New Connection Established-* \n# ' + message.guild.name);
-                }
-            })
             establishConnection(message.guild, message.channel);
         } else if (command === 'seed') {
           message.reply ('https://discord.com/oauth2/authorize?client_id=1166155625290534992&permissions=309237647360&integration_type=0&scope=bot');
